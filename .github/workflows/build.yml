@@ -6,17 +6,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup JDK 25
+
+      - name: Detect Java Version
+        id: java-check
+        run: |
+          # Grabs the java_version line, removes 'java_version=' and any whitespace
+          VERSION=$(grep "java_version" gradle.properties | cut -d'=' -f2 | xargs)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: ${{ steps.java-check.outputs.version }}
           distribution: 'microsoft'
+
       - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew build
+          ./gradlew build --no-daemon
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 4Gatos-MultiVersion-Jar
+          name: 4Gatos-Build
           path: build/libs/*.jar
