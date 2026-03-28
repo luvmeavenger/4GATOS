@@ -1,7 +1,9 @@
 plugins {
-	id 'net.fabricmc.fabric-loom' version "${loom_version}"
-	id 'maven-publish'
+    // This dynamically loads the plugin ID from your properties file
+    id "${project.loom_plugin_id}" version "${project.loom_version}"
+    id 'maven-publish'
 }
+
 
 version = project.mod_version
 group = project.maven_group
